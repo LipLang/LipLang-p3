@@ -1,6 +1,7 @@
 # LipLang-p3
 > This is a reconstruction
 
+## example
 ### filter and sum
 ```
 range(10) >> filter(# > 5) >> map(# * 2) >> sum() -> result
@@ -93,5 +94,57 @@ data >> processWithFactor(2.5) -> result
 ```
 
 ## TODO
-- Type system
+
 - Error processing
+
+- 从 LINQ 借鉴强类型系统
+```csharp
+Enumerable.Range(1, 10)
+    .Where(x => x > 5)
+    .Select(x => x * 2)
+    .Sum();
+```
+
+- 从 F#/OCaml 借鉴函数式编程
+```fsharp
+// F# 管道操作符 |>
+[1..10]
+|> List.filter (fun x -> x > 5)
+|> List.map (fun x -> x * 2)
+|> List.sum
+```
+
+- 从 Apache Beam 借鉴并行处理框架
+```python
+(p
+ | beam.Create([1, 2, 3, 4, 5])
+ | beam.Filter(lambda x: x > 2)
+ | beam.Map(lambda x: x * 2))
+```
+
+- 从 dplyr 借鉴数据分析特性
+```r
+mtcars %>%
+  filter(cyl == 6) %>%
+  group_by(am) %>%
+  summarise(mean_mpg = mean(mpg))
+```
+
+---
+
+### 其他借鉴:
+- Elixir 的管道操作符
+```elixir
+1..10
+|> Enum.filter(&(&1 > 5))
+|> Enum.map(&(&1 * 2))
+|> Enum.sum()
+```
+
+- Julia 的管道操作符
+```julia
+1:10 |>
+x -> filter(y -> y > 5, x) |>
+x -> map(y -> y * 2, x) |>
+sum
+```
