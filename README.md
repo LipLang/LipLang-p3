@@ -10,7 +10,7 @@
 ## advantage
 - clean, simple and intuitive
 - flexible and efficient `fork` and `merge`
-- be safe without the `own` and `borrow` problem (in `rust`)
+- be safe without ownership related problem (like `rust`)
 
 ## examples
 ### filter and sum
@@ -48,7 +48,7 @@ map(sum()) >>                 // [6,9,12,15,18,21]
 range(1, 6) >>              // [1,2,3,4,5]
 reduce(sum()) >>            // [3,6,10,15]
 @ print("Running Sum", _) >>
-get(-1) -> result           // 15
+get(_, -1) -> result        // 15
 ```
 
 ### 2d data frame and another fork
@@ -70,11 +70,11 @@ get(-1) -> result           // 15
 ```
 range(1, 11) />
 {
-  Small: filter(x => x <= 3) >>      // [1,2,3]
+  Small: filter(x => x <= 3) >>       // [1,2,3]
          sum() -> smallSum      // 6
          
   Medium: filter(x => 3 < x <= 7) >>  // [4,5,6,7]
-          product() -> medProd   // 840
+          product() -> medProd  // 840
           
   Large: filter(x => x > 7) >>       // [8,9,10]
          average() -> largeAvg  // 9
@@ -85,13 +85,14 @@ range(1, 11) />
 ```
 range(1, 6) >>           // [1,2,3,4,5]
 map(x => x * 2) ++       // [2,4,6,8,10]
-range(2, 7) />           // [2,3,4,5,6]
+range(2, 7) >>           // [2,3,4,5,6]
+combo() />               // [[2,4,6,8,10], [2,3,4,5,6]]
 {
-  Common: findCommon() >>      // [2,4,6]
-          sum() -> commonSum   // 12
+  Common: findCommon(_1, _2) >>  // [2,4,6]
+          sum() -> commonSum     // 12
           
-  Diff: findDifferent() >>     // [8,10,3,5]
-        sort() -> diffSorted   // [3,5,8,10]
+  Diff: findDifferent(_1, _2) >> // [8,10,3,5]
+        sort() -> diffSorted     // [3,5,8,10]
 }
 ```
 
@@ -108,8 +109,7 @@ data >> processWithFactor(2.5, _) -> result
 
 ## TODO
 - Error processing
-- complex data type (borrow table from Lua)
+- named table and its related operations
 - strong typing systems
 - functional programming
 - parallel processing framework
-- data analysis features
