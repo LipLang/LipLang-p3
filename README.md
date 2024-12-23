@@ -1,11 +1,24 @@
-# LipLang-p3
+# LipLang - p3
 > This is a reconstruction
+
+## the current design:
+1. use operators:
+- '>>' For ordinary pipe transmission
+- '/>' Used for branch operations
+- '++' is used to merge data flows
+- '->' Used for result assignment
+- '@' is used for insert operations without affecting the data flow
+
+2. use placeholder '#' for argumenting functions
+3. use welded Pipelines for code reusability
 
 ## example
 ### filter and sum
 ```
 range(10) >> filter(# > 5) >> map(# * 2) >> sum() -> result
-// 当函数只有一个参数, 且为管道传来的数据时,可以省略 `#` (如这里的sum函数)
+// When the function has only one argument, and its data is transmitted from the pipe, the '#' can be omitted
+// (such as the `sum` function above).
+
 // result = sum([x * 2 for x in range(10) if x > 5])
 
 result >> print()
@@ -27,14 +40,14 @@ sort() -> result       // [2,4,5,6,6,7]
 range(1, 8) >>                // [1,2,3,4,5,6,7,8]
 window(#, size=3, step=1) >>  // [[1,2,3],[2,3,4],[3,4,5]...]
 map(sum()) >>                 // [6,9,12,15,18,21]
-print() -> result
+@ print() -> result           // insert an op, but donot affect the data flow
 ```
 
 ### reduce
 ```
 range(1, 6) >>              // [1,2,3,4,5]
 reduce(sum()) >>            // [3,6,10,15]
-@ print("Running Sum", #) >>  // insert an op, but donot affect the data flow
+@ print("Running Sum", #) >>
 get(-1) -> result           // 15
 ```
 
@@ -93,11 +106,18 @@ let processWithFactor = (factor: float) => (
 data >> processWithFactor(2.5) -> result
 ```
 
+## advantage:
+- clean, simple and intuitive
+- flexible and efficient `fork` and `merge`
+- be safe without the `own` and `borrow` problem (in `rust`)
+
+---
+
 ## TODO
 
 - Error processing
 
-- 从 LINQ 借鉴强类型系统
+- Borrow strong typing systems from LINQ
 ```csharp
 Enumerable.Range(1, 10)
     .Where(x => x > 5)
@@ -105,7 +125,7 @@ Enumerable.Range(1, 10)
     .Sum();
 ```
 
-- 从 F#/OCaml 借鉴函数式编程
+- Borrow functional programming from F#/OCaml
 ```fsharp
 // F# 管道操作符 |>
 [1..10]
@@ -114,7 +134,7 @@ Enumerable.Range(1, 10)
 |> List.sum
 ```
 
-- 从 Apache Beam 借鉴并行处理框架
+- Borrow parallel processing framework from Apache Beam
 ```python
 (p
  | beam.Create([1, 2, 3, 4, 5])
@@ -122,7 +142,7 @@ Enumerable.Range(1, 10)
  | beam.Map(lambda x: x * 2))
 ```
 
-- 从 dplyr 借鉴数据分析特性
+- Borrow data analysis features from dplyr
 ```r
 mtcars %>%
   filter(cyl == 6) %>%
@@ -132,8 +152,8 @@ mtcars %>%
 
 ---
 
-### 其他借鉴:
-- Elixir 的管道操作符
+### Other lessons:
+- Pipe operator of Elixir
 ```elixir
 1..10
 |> Enum.filter(&(&1 > 5))
@@ -141,7 +161,7 @@ mtcars %>%
 |> Enum.sum()
 ```
 
-- Julia 的管道操作符
+- Julia is the pipeline operator
 ```julia
 1:10 |>
 x -> filter(y -> y > 5, x) |>
