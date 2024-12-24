@@ -7,10 +7,12 @@
 - '->' Used for result assignment
 - '@' is used for insert operations without affecting the data flow
 
+
 ## advantage
 - clean, simple and intuitive
 - flexible and efficient `fork` and `merge`
 - be safe without ownership related problem (like `rust`)
+
 
 ## examples
 ### filter and sum
@@ -107,9 +109,27 @@ let processWithFactor = (factor: float, x: float) => (
 data >> processWithFactor(2.5, _) -> result
 ```
 
+### connect persisted pipelines
+```
+let pipeline1 = (x) => (
+    map(x => x * 2) >>
+    filter(x => x > 10)
+)
+
+let pipeline2 = (x) => (
+    sort(x) >> take(5)
+)
+
+let combinedPipeline = pipeline1 |> pipeline2
+data >> combinedPipeline -> result
+```
+
+
 ## TODO
-- Error processing
+- use `package xxx/yyy/zzz`, `import "aaa/bbb/ccc"`
+- error processing (use `empty`?)
 - named table and its related operations
 - strong typing systems
 - functional programming
 - parallel processing framework
+- let data flow in/out temporary
